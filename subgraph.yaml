@@ -1,0 +1,29 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: rootstock-testnet
+    source:
+      address: "0x57232FA710cF1e0a1D95FC79E2731526B9Ac14E7"
+      abi: Contract
+      startBlock: 5747392
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NewCrowdFundingContractCreated
+        - OwnershipTransferred
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string)
+          handler: handleNewCrowdFundingContractCreated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/contract.ts
