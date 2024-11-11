@@ -1,19 +1,44 @@
-type NewCrowdFundingContractCreated @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  amount: BigInt! # uint256
-  cloneAddress: Bytes! # address
-  fundingDetailsId: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+enum MilestoneStatus {
+  Default
+  Pending
+  Approved
+  Declined 
 }
 
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type CampaignCreator @entity {
+  id: ID!
+  createdCampaigns: [Campaign!] @derivedFrom(field: "owner")
+  fundingGiven: BigInt
+  fundingWithdrawn: BigInt
+}
+
+type Campaign @entity {
+  id: ID!
+  campaignCID: String!
+  details: String
+  milestone: [Milestone!] @derivedFrom(field: "campaign")
+  currentMilestone: ID
+  dateCreated: BigInt!
+  campaignRunning: Boolean!
+  owner: CampaignCreator!
+  amountSought: BigInt!
+  donors: [Donors!] @derivedFrom(field: "campaign")
+}
+
+type Milestone @entity {
+  id: ID!
+  milestoneCID: String!
+  details: String
+  campaign: Campaign!
+  milestonestatus: MilestoneStatus!
+  periodToVote: BigInt!
+  dateCreated: BigInt!
+}
+
+type Donors @entity {
+  id: ID!
+  campaign: Campaign!
+  amount: BigInt!
+  donorAddress: Bytes!
+  date: BigInt!
 }
