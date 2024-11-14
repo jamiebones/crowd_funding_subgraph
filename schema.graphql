@@ -5,28 +5,31 @@ enum MilestoneStatus {
   Declined 
 }
 
+
 type CampaignCreator @entity {
-  id: ID!
+  id: Bytes!
   createdCampaigns: [Campaign!] @derivedFrom(field: "owner")
   fundingGiven: BigInt
   fundingWithdrawn: BigInt
 }
 
 type Campaign @entity {
-  id: ID!
+  id: Bytes!
   campaignCID: String!
-  details: String
+  active: Boolean!
+  projectDuration: BigInt
   milestone: [Milestone!] @derivedFrom(field: "campaign")
-  currentMilestone: ID
+  currentMilestone: Bytes
   dateCreated: BigInt!
   campaignRunning: Boolean!
   owner: CampaignCreator!
   amountSought: BigInt!
-  donors: [Donors!] @derivedFrom(field: "campaign")
+  donors: [Donation!] @derivedFrom(field: "donatingTo")
+  donorsRecall: [DonationWithdrawal!] @derivedFrom(field: "withdrawingFrom")
 }
 
 type Milestone @entity {
-  id: ID!
+  id: Bytes!
   milestoneCID: String!
   details: String
   campaign: Campaign!
@@ -35,10 +38,36 @@ type Milestone @entity {
   dateCreated: BigInt!
 }
 
-type Donors @entity {
-  id: ID!
-  campaign: Campaign!
-  amount: BigInt!
-  donorAddress: Bytes!
-  date: BigInt!
+
+type Donation @entity(immutable: true){
+   id: Bytes!
+   donor: Bytes!
+   amount: BigInt!
+   donatingTo: Campaign!
+   date: BigInt!
+}
+
+type DonationWithdrawal @entity(immutable: true){
+   id: Bytes!
+   donor: Bytes!
+   amount: BigInt!
+   withdrawingFrom: Campaign!
+   date: BigInt!
+}
+
+
+type CampaignContent @entity(immutable: true) {
+  id: Bytes!
+  details: String
+  title: String
+  media: [String!]
+  hash: String
+}
+
+type MilestoneContent @entity(immutable: true) {
+  id: Bytes!
+  details: String
+  title: String
+  media: [String!]
+  hash: String
 }

@@ -48,10 +48,38 @@ templates:
         - name: CrowdFundingContractForBegiBegi
           file: ./abis/FundingContract.json
       eventHandlers:
+        - event: MileStoneRejected(indexed address,string,uint256) 
+          handler: handleMilestoneRejected
         - event: DonatedToProject(indexed address,uint256,indexed address,uint256) 
           handler: handleFundsDonatedToProject
         - event: MilestoneWithdrawal(indexed address,uint256,uint256)
           handler: handleMilestonesWithdrawal
         - event: MilestoneCreated(indexed address,uint256,uint256,string)
           handler: handleMilestoneCreated
+      file: ./src/contract.ts
+  - kind: file/arweave
+    name: ArweaveContentCampaign
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CampaignContent
+      abis:
+        - name: CrowdFundingContractForBegiBegi
+          file: ./abis/FundingContract.json
+      handler: handleCampaignContent
+      file: ./src/contract.ts
+  - kind: file/arweave
+    name: ArweaveContentMilestone
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MilestoneContent
+      abis:
+        - name: CrowdFundingContractForBegiBegi
+          file: ./abis/FundingContract.json
+      handler: handleMilestoneContent
       file: ./src/contract.ts
