@@ -8,7 +8,7 @@ dataSources:
     name: CrowdFundingFactory
     network: rootstock-testnet
     source:
-      address: "0x6587a7195Bf7a6679CEdb542cD720169bC09141B"
+      address: "0xca7A6a89a7f0D430166fF110B3811B6eA067dB1d"
       abi: CrowdFundingFactory
       startBlock: 5747392
     mapping:
@@ -50,6 +50,8 @@ templates:
       eventHandlers:
         - event: MileStoneRejected(indexed address,string,uint256) 
           handler: handleMilestoneRejected
+        - event: CampaignEnded(indexed address,uint256) 
+          handler: handleCampaignEnded
         - event: DonatedToProject(indexed address,uint256,indexed address,uint256) 
           handler: handleFundsDonatedToProject
         - event: MilestoneWithdrawal(indexed address,uint256,uint256)

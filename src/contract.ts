@@ -5,7 +5,8 @@ import {
 } from "../generated/CrowdFundingFactory/CrowdFundingFactory";
 
 import { DonatedToProject as DonatedToProjectEvent, MilestoneCreated as MilestoneCreatedEvent, 
-  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent } from "../generated/templates/CrowdFundingContractForBegiBegi/CrowdFundingContractForBegiBegi";
+  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent, 
+  CampaignEnded as CampaignEndedEvent } from "../generated/templates/CrowdFundingContractForBegiBegi/CrowdFundingContractForBegiBegi";
 import { Campaign, CampaignContent, CampaignCreator, Milestone, Donation, MilestoneContent  } from "../generated/schema";
 
 const CAMPAIGN_ID_KEY = "campaignID";
@@ -25,6 +26,7 @@ export function handleNewCrowdFundingContractCreated(
     newCampaign.dateCreated = event.block.timestamp;
     newCampaign.amountSought = event.params.amount;
     newCampaign.campaignRunning = true;
+    newCampaign.active = true;
     newCampaign.save();
 
     let hash = newCampaign.campaignCID;
@@ -58,6 +60,16 @@ export function handleFundsDonated(event: DonatedToProjectEvent ):void {
         campaignCreator.fundingGiven = campaignCreator.fundingGiven!.plus(event.params.amount);
         campaignCreator.save();
       }
+    }
+}
+
+
+
+export function handleCampaignEnded(event: CampaignEndedEvent ):void {
+    const campaign = Campaign.load(Bytes.fromUTF8(event.params.project.toHexString()));
+    if ( campaign ){
+      campaign.active = false;
+      campaign.save();
     }
 }
 
@@ -186,8 +198,4 @@ export function handleMilestoneContent(content: Bytes): void {
   milestoneContent.save();
 }
 
-
-
-//subgraph endpoint: https://api.studio.thegraph.com/query/9399/crowd_funding_begi_begi/v0.0.1
-
-//https://api.studio.thegraph.com/query/9399/crowd_funding_begi_begi/v0.0.2
+//https://api.studio.thegraph.com/query/9399/crowd_funding_begi_begi/v0.0.3

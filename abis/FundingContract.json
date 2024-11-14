@@ -109,6 +109,25 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "project",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "data",
+        "type": "uint256"
+      }
+    ],
+    "name": "CampaignEnded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "donor",
         "type": "address"
       },
