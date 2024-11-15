@@ -16,6 +16,7 @@ type CampaignCreator @entity {
 type Campaign @entity {
   id: Bytes!
   campaignCID: String!
+  contractAddress: ID!
   active: Boolean!
   projectDuration: BigInt
   milestone: [Milestone!] @derivedFrom(field: "campaign")
@@ -24,6 +25,7 @@ type Campaign @entity {
   campaignRunning: Boolean!
   owner: CampaignCreator!
   amountSought: BigInt!
+  amountRaised: BigInt
   donors: [Donation!] @derivedFrom(field: "donatingTo")
   donorsRecall: [DonationWithdrawal!] @derivedFrom(field: "withdrawingFrom")
 }
@@ -58,6 +60,7 @@ type DonationWithdrawal @entity(immutable: true){
 
 type CampaignContent @entity(immutable: true) {
   id: Bytes!
+  # content: String
   details: String
   title: String
   media: [String!]
@@ -66,6 +69,7 @@ type CampaignContent @entity(immutable: true) {
 
 type MilestoneContent @entity(immutable: true) {
   id: Bytes!
+  # content: String
   details: String
   title: String
   media: [String!]

@@ -83,6 +83,12 @@
         "internalType": "string",
         "name": "fundingDetailsId",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "duration",
+        "type": "uint256"
       }
     ],
     "name": "NewCrowdFundingContractCreated",

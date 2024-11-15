@@ -8,7 +8,7 @@ dataSources:
     name: CrowdFundingFactory
     network: rootstock-testnet
     source:
-      address: "0xca7A6a89a7f0D430166fF110B3811B6eA067dB1d"
+      address: "0xB512a02E95d6116b4e83cCEd55fA1bAa8fb421DD"
       abi: CrowdFundingFactory
       startBlock: 5747392
     mapping:
@@ -24,7 +24,7 @@ dataSources:
         - name: CrowdFundingFactory
           file: ./abis/FactoryContract.json
       eventHandlers:
-        - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string)
+        - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string,uint256)
           handler: handleNewCrowdFundingContractCreated
       file: ./src/contract.ts
 templates:

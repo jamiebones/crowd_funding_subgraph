@@ -27,6 +27,9 @@ export function handleNewCrowdFundingContractCreated(
     newCampaign.amountSought = event.params.amount;
     newCampaign.campaignRunning = true;
     newCampaign.active = true;
+    newCampaign.amountRaised = new BigInt(0)
+    newCampaign.contractAddress = event.params.cloneAddress.toHexString();
+    newCampaign.projectDuration = event.params.duration;
     newCampaign.save();
 
     let hash = newCampaign.campaignCID;
@@ -54,6 +57,9 @@ export function handleFundsDonated(event: DonatedToProjectEvent ):void {
       donation.date = event.params.date;
       donation.donor = event.params.donor;
       donation.save();
+
+      campaign.amountRaised =campaign.amountRaised!.plus(event.params.amount);
+      
       //get the campaignCreator and add the donation to the campainCreator
       const campaignCreator = CampaignCreator.load(campaign.owner);
       if ( campaignCreator){
@@ -142,6 +148,8 @@ export function handleCampaignContent(content: Bytes): void {
   let id = context.getBytes(CAMPAIGN_ID_KEY);
   let campaignContent = new CampaignContent(id);
 
+  //campaignContent.content = content.toString()
+
   let value = json.fromBytes(content).toObject();
   let title = value.get("title");
   let media = value.get("media");
@@ -172,6 +180,8 @@ export function handleMilestoneContent(content: Bytes): void {
   let context = dataSource.context();
   let id = context.getBytes(MILESTONE_ID_KEY);
   let milestoneContent = new MilestoneContent(id);
+
+  //milestoneContent.content = content.toString();
 
   let value = json.fromBytes(content).toObject();
   let title = value.get("title");
