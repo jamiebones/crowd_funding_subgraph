@@ -4,13 +4,17 @@ import {
   NewCrowdFundingContractCreated as NewCrowdFundingContractCreatedEvent
 } from "../generated/CrowdFundingFactory/CrowdFundingFactory";
 
+import { CrowdFundingContractForBegiBegi } from "../generated/templates";
+
 import { DonatedToProject as DonatedToProjectEvent, MilestoneCreated as MilestoneCreatedEvent, 
-  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent, 
+  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent,
   CampaignEnded as CampaignEndedEvent } from "../generated/templates/CrowdFundingContractForBegiBegi/CrowdFundingContractForBegiBegi";
 import { Campaign, CampaignContent, CampaignCreator, Milestone, Donation, MilestoneContent  } from "../generated/schema";
 
 const CAMPAIGN_ID_KEY = "campaignID";
 const MILESTONE_ID_KEY =  "milestoneID"
+
+
 
 
 export function handleNewCrowdFundingContractCreated(
@@ -24,10 +28,12 @@ export function handleNewCrowdFundingContractCreated(
     newCampaign.campaignCID = event.params.fundingDetailsId;
     newCampaign.owner = Bytes.fromUTF8(event.params.owner.toHexString());
     newCampaign.dateCreated = event.block.timestamp;
+    newCampaign.category = event.params.category;
     newCampaign.amountSought = event.params.amount;
     newCampaign.campaignRunning = true;
     newCampaign.active = true;
-    newCampaign.amountRaised = new BigInt(0)
+    newCampaign.amountRaised = new BigInt(0);
+    newCampaign.backers = new BigInt(0);
     newCampaign.contractAddress = event.params.cloneAddress.toHexString();
     newCampaign.projectDuration = event.params.duration;
     newCampaign.save();
@@ -43,6 +49,9 @@ export function handleNewCrowdFundingContractCreated(
     campaignCreator.fundingWithdrawn = new BigInt(0); 
 }
     campaignCreator.save();
+    CrowdFundingContractForBegiBegi.create(event.params.cloneAddress);
+
+    
 }
 
 
@@ -57,6 +66,19 @@ export function handleFundsDonated(event: DonatedToProjectEvent ):void {
       donation.date = event.params.date;
       donation.donor = event.params.donor;
       donation.save();
+      const donors = campaign.donors;
+      const donorsArray = donors.load();
+      let donorIndex: i32 = -1;
+      for (let i = 0; i < donorsArray.length; i++) {
+        if (donorsArray[i].donor == event.params.donor) {
+          donorIndex = i;
+          break;
+        }
+      }
+      if ( donorIndex < 0 ){
+        //has not donated before increment backers field
+        campaign.backers = campaign.backers.plus(new BigInt(1));
+      }
 
       campaign.amountRaised =campaign.amountRaised!.plus(event.params.amount);
       
@@ -115,6 +137,20 @@ export function handleFundsWithdrawn(event: MilestoneWithdrawalEvent):void {
    let campaign = Campaign.load(Bytes.fromUTF8(event.transaction.to!.toHexString()))
   if ( campaign && campaign.currentMilestone ){
      const currentMilestoneId = campaign.currentMilestone;
+     const donors = campaign.donors;
+     const donorsArray = donors.load();
+     let donorIndex: i32 = -1;
+
+    for (let i = 0; i < donorsArray.length; i++) {
+      if (donorsArray[i].donor == event.transaction.from) {
+        donorIndex = i;
+        break;
+      }
+    }
+     if (donorIndex > 0){
+       //has not donated before increment backers field
+       campaign.backers = campaign.backers.minus(new BigInt(1));
+     }
      //load the milestone
      const milestone = Milestone.load(currentMilestoneId!);
      if ( milestone && milestone.milestonestatus === "Pending" ){
@@ -155,6 +191,7 @@ export function handleCampaignContent(content: Bytes): void {
   let media = value.get("media");
   let details = value.get("details");
 
+  campaignContent.campaign = id;
   if ( title ){
     campaignContent.title = title.toString();
   }
@@ -180,6 +217,7 @@ export function handleMilestoneContent(content: Bytes): void {
   let context = dataSource.context();
   let id = context.getBytes(MILESTONE_ID_KEY);
   let milestoneContent = new MilestoneContent(id);
+  milestoneContent.milestone = id;
 
   //milestoneContent.content = content.toString();
 

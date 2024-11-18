@@ -4,35 +4,13 @@ indexerHints:
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
+  - kind: ethereum/contract
     name: CrowdFundingFactory
     network: rootstock-testnet
     source:
-      address: "0xB512a02E95d6116b4e83cCEd55fA1bAa8fb421DD"
+      address: "0x49B4D00Dd710C014400cB4833F9851A15Ae35ff7"
       abi: CrowdFundingFactory
       startBlock: 5747392
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - CampaignCreator
-        - Campaign
-        - Milestone
-        - Donors
-      abis:
-        - name: CrowdFundingFactory
-          file: ./abis/FactoryContract.json
-      eventHandlers:
-        - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string,uint256)
-          handler: handleNewCrowdFundingContractCreated
-      file: ./src/contract.ts
-templates:
-  - kind: ethereum/contract
-    name: CrowdFundingContractForBegiBegi
-    network: rootstock-testnet
-    source:
-      abi: CrowdFundingContractForBegiBegi
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -48,12 +26,31 @@ templates:
         - name: CrowdFundingContractForBegiBegi
           file: ./abis/FundingContract.json
       eventHandlers:
+        - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string,uint256,string)
+          handler: handleNewCrowdFundingContractCreated
+      file: ./src/contract.ts
+templates:
+  - kind: ethereum/contract
+    name: CrowdFundingContractForBegiBegi
+    network: rootstock-testnet
+    source:
+      abi: CrowdFundingContractForBegiBegi
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CrowdFundingContractForBegiBegi
+      abis:
+        - name: CrowdFundingContractForBegiBegi
+          file: ./abis/FundingContract.json
+      eventHandlers:
         - event: MileStoneRejected(indexed address,string,uint256) 
           handler: handleMilestoneRejected
         - event: CampaignEnded(indexed address,uint256) 
           handler: handleCampaignEnded
         - event: DonatedToProject(indexed address,uint256,indexed address,uint256) 
-          handler: handleFundsDonatedToProject
+          handler: handleFundsDonated
         - event: MilestoneWithdrawal(indexed address,uint256,uint256)
           handler: handleMilestonesWithdrawal
         - event: MilestoneCreated(indexed address,uint256,uint256,string)

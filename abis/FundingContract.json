@@ -412,6 +412,11 @@
         "internalType": "address",
         "name": "_factoryAddress",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_category",
+        "type": "string"
       }
     ],
     "name": "initialize",

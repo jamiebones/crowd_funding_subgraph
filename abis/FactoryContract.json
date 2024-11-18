@@ -89,6 +89,12 @@
         "internalType": "uint256",
         "name": "duration",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "category",
+        "type": "string"
       }
     ],
     "name": "NewCrowdFundingContractCreated",
@@ -155,6 +161,11 @@
         "internalType": "uint256",
         "name": "_duration",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_category",
+        "type": "string"
       }
     ],
     "name": "createNewCrowdFundingContract",
