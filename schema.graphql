@@ -2,12 +2,24 @@ enum MilestoneStatus {
   Default
   Pending
   Approved
-  Declined 
+  Declined
 }
 
+type _Schema_
+  @fulltext(
+    name: "campaignSearch"
+    language: en
+    algorithm: rank
+    include: [
+      {
+        entity: "CampaignContent"
+        fields: [{ name: "details" }, { name: "title" }]
+      }
+    ]
+  )
 
 type CampaignCreator @entity {
-  id: Bytes!
+  id: ID!
   createdCampaigns: [Campaign!] @derivedFrom(field: "owner")
   fundingGiven: BigInt
   fundingWithdrawn: BigInt
@@ -17,7 +29,6 @@ type Campaign @entity {
   id: Bytes!
   campaignCID: String!
   category: String!
-  backers: BigInt!
   contractAddress: ID!
   active: Boolean!
   projectDuration: BigInt
@@ -44,23 +55,21 @@ type Milestone @entity {
   content: MilestoneContent @derivedFrom(field: "milestone")
 }
 
-
-type Donation @entity(immutable: true){
-   id: Bytes!
-   donor: Bytes!
-   amount: BigInt!
-   donatingTo: Campaign!
-   date: BigInt!
+type Donation @entity(immutable: true) {
+  id: Bytes!
+  donor: ID!
+  amount: BigInt!
+  donatingTo: Campaign!
+  date: BigInt!
 }
 
-type DonationWithdrawal @entity(immutable: true){
-   id: Bytes!
-   donor: Bytes!
-   amount: BigInt!
-   withdrawingFrom: Campaign!
-   date: BigInt!
+type DonationWithdrawal @entity(immutable: true) {
+  id: Bytes!
+  donor: ID!
+  amount: BigInt!
+  withdrawingFrom: Campaign!
+  date: BigInt!
 }
-
 
 type CampaignContent @entity(immutable: true) {
   id: Bytes!

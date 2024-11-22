@@ -1,16 +1,21 @@
-specVersion: 1.0.0
-indexerHints:
-  prune: auto
+specVersion: 0.0.5
+# indexerHints:
+#   prune: auto
+features:
+  - fullTextSearch
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: CrowdFundingFactory
-    network: rootstock-testnet
+    #network: rootstock-testnet
+    network: mainnet
     source:
-      address: "0x49B4D00Dd710C014400cB4833F9851A15Ae35ff7"
+      address: "0x39C0B0F05366261169D6Cb2005D7423BE94d1ED9"
+      #address: "0xBaAaBaD74EbB522Bb6f626B8cbBac4B6737C410a"
       abi: CrowdFundingFactory
-      startBlock: 5747392
+      #startBlock: 5747392
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -18,31 +23,32 @@ dataSources:
       entities:
         - CampaignCreator
         - Campaign
-        - Milestone
-        - Donors
       abis:
         - name: CrowdFundingFactory
           file: ./abis/FactoryContract.json
-        - name: CrowdFundingContractForBegiBegi
-          file: ./abis/FundingContract.json
+        # - name: CrowdFundingContractForBegiBegi
+        #   file: ./abis/FundingContract.json
       eventHandlers:
         - event: NewCrowdFundingContractCreated(indexed address,uint256,address,string,uint256,string)
           handler: handleNewCrowdFundingContractCreated
       file: ./src/contract.ts
 templates:
   - kind: ethereum/contract
-    name: CrowdFundingContractForBegiBegi
-    network: rootstock-testnet
+    name: Campaign
+    #network: rootstock-testnet
+    network: mainnet
     source:
-      abi: CrowdFundingContractForBegiBegi
+      abi: Campaign
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CrowdFundingContractForBegiBegi
+        - Milestone
+        - Donation
+        - DonationWithdrawal
       abis:
-        - name: CrowdFundingContractForBegiBegi
+        - name: Campaign
           file: ./abis/FundingContract.json
       eventHandlers:
         - event: MileStoneRejected(indexed address,string,uint256) 
@@ -56,29 +62,31 @@ templates:
         - event: MilestoneCreated(indexed address,uint256,uint256,string)
           handler: handleMilestoneCreated
       file: ./src/contract.ts
-  - kind: file/arweave
-    name: ArweaveContentCampaign
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - CampaignContent
-      abis:
-        - name: CrowdFundingContractForBegiBegi
-          file: ./abis/FundingContract.json
-      handler: handleCampaignContent
-      file: ./src/contract.ts
-  - kind: file/arweave
-    name: ArweaveContentMilestone
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - MilestoneContent
-      abis:
-        - name: CrowdFundingContractForBegiBegi
-          file: ./abis/FundingContract.json
-      handler: handleMilestoneContent
-      file: ./src/contract.ts
+#   - kind: file/arweave
+#     name: ArweaveContentCampaign
+#     mapping:
+#       kind: ethereum/events
+#       apiVersion: 0.0.7
+#       language: wasm/assemblyscript
+#       entities:
+#         - CampaignContent
+#       abis:
+#         - name: CrowdFundingContractForBegiBegi
+#           file: ./abis/FundingContract.json
+#       handler: handleCampaignContent
+#       file: ./src/contract.ts
+#   - kind: file/arweave
+#     name: ArweaveContentMilestone
+#     mapping:
+#       kind: ethereum/events
+#       apiVersion: 0.0.7
+#       language: wasm/assemblyscript
+#       entities:
+#         - MilestoneContent
+#       abis:
+#         - name: CrowdFundingContractForBegiBegi
+#           file: ./abis/FundingContract.json
+#       handler: handleMilestoneContent
+#       file: ./src/contract.ts
+
+
