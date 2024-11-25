@@ -88,3 +88,12 @@ type MilestoneContent @entity(immutable: true) {
   media: [String!]
   hash: String
 }
+
+type Statistic @entity {
+    id: Bytes!
+    totalContracts: BigInt!
+    totalFundingRequest: BigInt!
+    totalBackers: BigInt!
+    totalWithdrawals: BigInt!
+    totalFundingGiven: BigInt!
+}

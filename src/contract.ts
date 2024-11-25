@@ -7,18 +7,22 @@ import {
 import { Campaign as CampaignTemplate } from "../generated/templates";
 
 import { DonatedToProject as DonatedToProjectEvent, MilestoneCreated as MilestoneCreatedEvent, 
-  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent,
+  MilestoneWithdrawal as MilestoneWithdrawalEvent, MileStoneRejected as MilestoneRejectedEvent, 
+  DonationRetrievedByDonor as DonationRetrievedByDonorEvent,
   CampaignEnded as CampaignEndedEvent } from "../generated/templates/Campaign/Campaign";
-import { Campaign, CampaignContent, CampaignCreator, Milestone, Donation, MilestoneContent  } from "../generated/schema";
+import { Campaign, CampaignContent, CampaignCreator, Milestone, DonationWithdrawal,
+         Donation, MilestoneContent, Statistic  } from "../generated/schema";
 
 const CAMPAIGN_ID_KEY = "campaignID";
-const MILESTONE_ID_KEY =  "milestoneID"
+const MILESTONE_ID_KEY =  "milestoneID";
+const STATS_ID = Bytes.fromUTF8("0x26471bEF27bA75c8965fCD382c89121d5d70B49a");
 
 export function handleNewCrowdFundingContractCreated(
   event: NewCrowdFundingContractCreatedEvent
 ): void {
    
    let campaignCreator = CampaignCreator.load(event.params.owner.toHexString());
+   let stats = Statistic.load(STATS_ID);
    let newCampaign = new Campaign(
     Bytes.fromUTF8(event.params.cloneAddress.toHexString())
    );
@@ -40,6 +44,20 @@ export function handleNewCrowdFundingContractCreated(
     // DataSourceTemplate.createWithContext("ArweaveContentCampaign", [hash], context);
 
     CampaignTemplate.create(event.params.cloneAddress);
+
+    if (!stats){
+      stats = new Statistic(STATS_ID);
+      stats.totalContracts = BigInt.fromI32(1);
+      stats.totalBackers = BigInt.fromI32(0);
+      stats.totalFundingRequest = BigInt.fromI32(0);
+      stats.totalFundingGiven = BigInt.fromI32(0);
+      stats.totalWithdrawals = BigInt.fromI32(0);
+    } else{
+      stats.totalContracts = stats.totalContracts.plus(BigInt.fromI32(1));
+      stats.totalFundingRequest = stats.totalFundingRequest.plus(event.params.amount);
+    }
+
+    stats.save();
   
   if (campaignCreator === null){
     campaignCreator = new CampaignCreator(event.params.owner.toHexString());
@@ -52,6 +70,7 @@ export function handleNewCrowdFundingContractCreated(
 
 export function handleFundsDonated(event: DonatedToProjectEvent ):void {
   //get the campaign we are donating to
+  const stats = Statistic.load(STATS_ID);
   const campaign = Campaign.load(Bytes.fromUTF8(event.params.project.toHexString()));
     if ( campaign ){
       let donation = new Donation(Bytes.fromUTF8(event.params.donor.toHexString() 
@@ -70,6 +89,11 @@ export function handleFundsDonated(event: DonatedToProjectEvent ):void {
       if ( campaignCreator){
         campaignCreator.fundingGiven = campaignCreator.fundingGiven!.plus(event.params.amount);
         campaignCreator.save();
+      }
+
+      if ( stats ){
+        stats.totalBackers = stats.totalBackers.plus(BigInt.fromI32(1));
+        stats.totalFundingGiven = stats.totalFundingGiven.plus(event.params.amount);
       }
     }
 }
@@ -107,7 +131,7 @@ export function handleMilestoneCreated(event: MilestoneCreatedEvent ):void {
 export function handleFundsWithdrawn(event: MilestoneWithdrawalEvent): void {
   let creatorId = event.params.owner.toHexString();
   let campaignCreator = CampaignCreator.load(creatorId);
-  
+  const stats = Statistic.load(STATS_ID);
   if (campaignCreator) {
     campaignCreator.fundingWithdrawn = campaignCreator.fundingWithdrawn!.plus(event.params.amount);
     campaignCreator.save();
@@ -122,6 +146,9 @@ export function handleFundsWithdrawn(event: MilestoneWithdrawalEvent): void {
       milestone.milestonestatus = "Approved";
       milestone.save();
     }
+  }
+  if (stats){
+    stats.totalWithdrawals = stats.totalWithdrawals.plus(event.params.amount);
   }
 }
 
@@ -140,6 +167,23 @@ export function handleMilestoneRejected(event: MilestoneRejectedEvent):void {
        milestone.save();
      }
     }
+}
+
+export function handleDonationRetrievedByDonor(event: DonationRetrievedByDonorEvent):void {
+  //set the current milestone to Rejected
+   let campaign = Campaign.load(Bytes.fromUTF8(event.params.project.toHexString()))
+   let donationWithdrawal = new DonationWithdrawal(Bytes.fromUTF8(event.params.project.toHexString() 
+   + event.params.donor.toHexString() + event.params.date.toString()))
+  if ( campaign ){
+     campaign.amountRaised = campaign.amountRaised!.minus(event.params.amountDonated);
+     campaign.save();
+     donationWithdrawal.amount = event.params.amountReceived;
+     donationWithdrawal.donor = event.params.donor.toHexString();
+     donationWithdrawal.withdrawingFrom = event.params.project;
+     donationWithdrawal.date = event.params.date;
+     donationWithdrawal.save();
+  }
+
 }
 
 // export function handleCampaignContent(content: Bytes): void {
