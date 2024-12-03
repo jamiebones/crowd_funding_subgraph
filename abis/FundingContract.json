@@ -63,6 +63,11 @@
   },
   {
     "inputs": [],
+    "name": "NewDurationSmallerThanPreviousDuration",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NotInitializing",
     "type": "error"
   },
@@ -434,7 +439,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_donorAddress",
+        "type": "address"
+      }
+    ],
     "name": "hasVotedOnMilestone",
     "outputs": [
       {
@@ -444,6 +455,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newPeriod",
+        "type": "uint256"
+      }
+    ],
+    "name": "increaseCampaignPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -528,6 +552,24 @@
     "name": "retrieveDonatedAmount",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalVotesOnMilestone",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

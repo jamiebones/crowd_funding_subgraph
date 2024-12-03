@@ -35,6 +35,7 @@ type Campaign @entity {
   milestone: [Milestone!] @derivedFrom(field: "campaign")
   currentMilestone: Bytes
   dateCreated: BigInt!
+  backers: BigInt!
   campaignRunning: Boolean!
   owner: CampaignCreator!
   amountSought: BigInt!

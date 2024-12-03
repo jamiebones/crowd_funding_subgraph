@@ -8,14 +8,13 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: CrowdFundingFactory
-    #network: rootstock-testnet
-    network: mainnet
+    network: rootstock-testnet
+    #network: mainnet
     source:
-      address: "0x30b0F7A540193D58F9FeB97b3071686Cd3a389Ae"
-      #address: "0xBaAaBaD74EbB522Bb6f626B8cbBac4B6737C410a"
+      address: "0xa173f0f31Ec27B94dC56F3D9218148F612e750f7"
       abi: CrowdFundingFactory
-      #startBlock: 5747392
-      startBlock: 0
+      startBlock: 5825793
+      reorgThreshold: 500
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -35,8 +34,8 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Campaign
-    #network: rootstock-testnet
-    network: mainnet
+    network: rootstock-testnet
+    #network: mainnet
     source:
       abi: Campaign
     mapping:
@@ -65,31 +64,31 @@ templates:
           handler: handleDonationRetrievedByDonor
           
       file: ./src/contract.ts
-#   - kind: file/arweave
-#     name: ArweaveContentCampaign
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities:
-#         - CampaignContent
-#       abis:
-#         - name: CrowdFundingContractForBegiBegi
-#           file: ./abis/FundingContract.json
-#       handler: handleCampaignContent
-#       file: ./src/contract.ts
-#   - kind: file/arweave
-#     name: ArweaveContentMilestone
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities:
-#         - MilestoneContent
-#       abis:
-#         - name: CrowdFundingContractForBegiBegi
-#           file: ./abis/FundingContract.json
-#       handler: handleMilestoneContent
-#       file: ./src/contract.ts
+  - kind: file/arweave
+    name: ArweaveContentCampaign
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CampaignContent
+      abis:
+        - name: CrowdFundingContractForBegiBegi
+          file: ./abis/FundingContract.json
+      handler: handleCampaignContent
+      file: ./src/contract.ts
+  - kind: file/arweave
+    name: ArweaveContentMilestone
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MilestoneContent
+      abis:
+        - name: CrowdFundingContractForBegiBegi
+          file: ./abis/FundingContract.json
+      handler: handleMilestoneContent
+      file: ./src/contract.ts
 
 
