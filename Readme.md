@@ -2,7 +2,7 @@
 
 This is a subgraph for the Crowdfunding Smart Contract deployed to the Rootstock network. The smart contract is found [here](https://github.com/jamiebones/crowd_funding_begi_begi).
 
-The sub graph index different log events from the smart contract
+The sub graph index different log events from the smart contract. The subgraph provides functionality of extracting data from Arweave, fulltext search of entities and indexing logs from proxy contracts using templates.
 
 ## Installation
 
