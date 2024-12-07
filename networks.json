@@ -1,8 +1,0 @@
-{
-  "rootstock-testnet": {
-    "Contract": {
-      "address": "0x57232FA710cF1e0a1D95FC79E2731526B9Ac14E7",
-      "startBlock": 5747392
-    }
-  }
-}
