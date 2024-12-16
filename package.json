@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ crowd_funding_begi_begi",
-    "create-local": "graph create --node http://localhost:8020/ crowd_funding_begi_begi",
-    "remove-local": "graph remove --node http://localhost:8020/ crowd_funding_begi_begi",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 crowd_funding_begi_begi",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ crowd_funding_subgraph",
+    "create-local": "graph create --node http://localhost:8020/ crowd_funding_subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ crowd_funding_subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 crowd_funding_subgraph",
     "test": "graph test"
   },
   "devDependencies": {

@@ -330,9 +330,7 @@ export function handleDonationRetrievedByDonor(event: DonationRetrievedByDonorEv
     let context = dataSource.context();
     let id = context.getBytes(CAMPAIGN_ID_KEY);
     let campaignContent = new CampaignContent(id);
-  
-    //campaignContent.content = content.toString()
-  
+
     let value = json.fromBytes(content).toObject();
     let title = value.get("title");
     let media = value.get("media");
@@ -366,8 +364,6 @@ export function handleDonationRetrievedByDonor(event: DonationRetrievedByDonorEv
     let id = context.getBytes(MILESTONE_ID_KEY);
     let milestoneContent = new MilestoneContent(id);
     milestoneContent.milestone = id;
-  
-    //milestoneContent.content = content.toString();
   
     let value = json.fromBytes(content).toObject();
     let title = value.get("title");
